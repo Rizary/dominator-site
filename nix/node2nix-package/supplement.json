@@ -1,0 +1,8 @@
+[
+    {
+        "wasm-pack": "^0.9.1",
+        "postcss-cli": "^7.1.0",
+        "@fullhuman/postcss-purgecss": "^2.1.2",
+        "@aws-amplify/cli": "^4.43.0"
+    }
+]

@@ -1,4 +1,6 @@
 mod routing;
+mod blog;
+mod docs;
 mod app;
 
 use wasm_bindgen::prelude::*;

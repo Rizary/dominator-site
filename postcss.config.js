@@ -1,14 +1,4 @@
 // postcss.config.js
-const postcssAnimations = require("postcss-animations")({
-    data: [
-        require("postcss-animation.css-data"),
-        require("postcss-magic.css-data"),
-        require("postcss-mimic.css-data"),
-        require("postcss-tuesday.css-data")
-    ],
-    checkDuplications: true,
-    disableCheckCssVariables: true
-})
 
 const env = process.env.NODE_ENV;
 const isProd = env === "production";
@@ -33,6 +23,5 @@ module.exports = {
         require('postcss-clean'),
         require('postcss-nested'),
         require('lost'),
-        postcssAnimations,
     ]
 }

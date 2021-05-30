@@ -7,19 +7,18 @@ use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
 
 use futures_signals::signal::{Signal, SignalExt, Mutable};
-use futures_signals::signal_vec::{SignalVec, SignalVecExt, MutableVec};
-use dominator::{Dom, text_signal, html, clone, events, link};
+use dominator::{Dom, text_signal, html, clone, events, link, routing};
 
 use js_sys::Error;
 use web_sys::{window, Response, RequestInit, Headers, RequestMode};
 
 use crate::routing::Route;
+use crate::blog::Blog;
+use crate::docs::Docs;
 
 #[derive(Debug)]
 pub struct App {
-
     message: Mutable<String>,
-
 }
 
 const BASE_URL: &str = "http://localhost:8185";
@@ -45,11 +44,14 @@ impl App {
                     .text("Hi")
                 }),
 
-                html!("input", {
-                    .focused(true)
-                    .class(["new-todo","form-control","width-full"])
-                    .attribute("placeholder", "What needs to be done?")
-                    .property_signal("value", app.message.signal_cloned())
+                html!("ul", {
+                    .class(["filters","list-style-none"])
+                    .children(&mut [
+                        Self::render_button("Docs", Route::Docs),
+                        Self::render_button("API", Route::API("api#".into())),
+                        Self::render_button("Example", Route::Example("example#".into())),
+                        Self::render_button("Blog", Route::Blog),
+                    ])
                 }),
             ])
         })
@@ -57,21 +59,36 @@ impl App {
 
     fn render_main(app: Rc<Self>) -> Dom {
         html!("section", {
-            .class(["main","my-2","mx-6","d-inline-flex","flex-column"])
-            // Hide if it doesn't have any todos.
-
-            .children(&mut [
-                html!("div", {
-                    .class(["d-inline-flex","flex-row","flex-items-center"])
-                }),
-            ])
+            .child_signal(
+              routing::url()
+                .signal_ref(|url| Route::from_url(&url) )
+                .map(move |route| {
+                    let default = html!("section", {
+                        .class(["main","my-2","mx-6","d-inline-flex","flex-column"])
+            
+                        .children(&mut [
+                            html!("div", {
+                                .class(["d-inline-flex","flex-row","flex-items-center"])
+                                .text("Hello, world!")
+                            }),
+                            
+                        ])
+                    });
+                    match route {
+                        Route::Home => Some(default),
+                        Route::Docs => Some(Docs::render(app.clone())),
+                        Route::Blog => Some(Blog::render(app.clone())),
+                        _ => Some(default),
+                    }
+                })
+            )
         })
     }
 
     fn render_button(text: &str, route: Route) -> Dom {
         html!("li", {
             .children(&mut [
-                link!(route.url(), {
+                link!(String::from(&route), {
                     .text(text)
                     .class_signal("selected", Route::signal().map(move |x| x == route))
                 })

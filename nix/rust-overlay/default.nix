@@ -1,8 +1,5 @@
-{ rustChannelOf }:
-(rustChannelOf {
-  rustToolchain = ./rust-toolchain;
-  sha256 = "sha256-7zt+rHZxx+ha4P/UnT2aNIuBtjPkejVI2PycAt+Apiw=";
-}).rust.override {
+{ rust-bin }:
+rust-bin.stable.latest.rust.override {
   extensions = [
     "clippy-preview"
     "rls-preview"

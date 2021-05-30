@@ -1,5 +1,5 @@
 {
-  description = "rollup-wasm-nix-rust";
+  description = "Dominator Unofficial Website";
   # To update all inputs:
   # $ nix flake update --recreate-lock-file
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/master";
@@ -8,12 +8,11 @@
   inputs.devshell.url = "github:numtide/devshell/master";
   # Use the same version of nixpkgs as this project.
   inputs.devshell.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.mozilla-overlay.url = "github:mozilla/nixpkgs-mozilla/master";
-  inputs.mozilla-overlay.flake = false;
+  inputs.rust-overlay.url = "github:oxalica/rust-overlay";
 
-  outputs = { self, nixpkgs, flake-utils, devshell, mozilla-overlay }:
+  outputs = { self, nixpkgs, flake-utils, devshell, rust-overlay }:
     {
-      overlay = import ./overlay.nix;
+      overlay = import ./nix/overlay.nix;
     }
     //
     (
@@ -29,20 +28,20 @@
               ];
             };
             overlays = [
-              (import mozilla-overlay)
+              (import rust-overlay)
               devshell.overlay
               self.overlay
             ];
           };
         in
         {
-          legacyPackages = pkgs.rollup-wasm-nix-rust;
+          legacyPackages = pkgs.dominator;
 
-          defaultPackage = pkgs.rollup-wasm-nix-rust.nix.rust-frontend;
+          defaultPackage = pkgs.dominator.nix.rust-frontend;
 
-          packages = flake-utils.lib.flattenTree pkgs.rollup-wasm-nix-rust;
+          packages = flake-utils.lib.flattenTree pkgs.dominator;
 
-          devShell = import ./devshell.nix { inherit pkgs; };
+          devShell = import ./nix/devshell.nix { inherit pkgs; };
 
           checks = { };
         }

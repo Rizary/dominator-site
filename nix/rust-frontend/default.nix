@@ -1,42 +1,5 @@
-{ pkgs, rollup-wasm-nix-rust }:
-let
-  inherit (pkgs) stdenv lib;
-
-  package = lib.importJSON ../../package.json;
-
-  # postcssConf = callPackage ./postcssConf.nix { };
-
-  yarnPkg = pkgs.mkYarnPackage rec {
-    pname = package.name;
-    version = package.version;
-    src = null;
-    dontUnpack = true;
-    packageJSON = ../../package.json;
-    yarnLock = ../../yarn.lock;
-
-    preConfigure = ''
-      mkdir ${package.name}
-      cd ${package.name}
-      ln -s ${packageJSON} ./package.json
-      ln -s ${yarnLock} ./yarn.lock
-    '';
-
-    yarnPreBuild = ''
-      mkdir -p $HOME/.node-gyp/${pkgs.nodejs.version}
-      echo 9 > $HOME/.node-gyp/${pkgs.nodejs.version}/installVersion
-      ln -sfv ${pkgs.nodejs}/include $HOME/.node-gyp/${pkgs.nodejs.version}
-    '';
-
-    pkgConfig = {
-    };
-
-    publishBinsFor = [
-      "rollup"
-      "postcss"
-      "postcss-cli"
-      "purgecss"
-    ];
-  };
+{ pkgs, dominator }:
+let inherit (pkgs) stdenv lib;
 in
 stdenv.mkDerivation {
   name = "${package.name}-${package.version}";
@@ -50,10 +13,10 @@ stdenv.mkDerivation {
     src = ../../.;
   };
 
-  buildInputs = [ pkgs.nodejs-14_x yarnPkg pkgs.yarn rollup-wasm-nix-rust.nix.rust-overlay pkgs.openssl pkgs.zlib pkgs.cacert ];
+  buildInputs = [ pkgs.nodejs-14_x dominator.yarnPkg pkgs.yarn dominator.nix.rust-overlay pkgs.openssl pkgs.zlib pkgs.cacert ];
 
   patchPhase = ''
-    ln -s ${yarnPkg}/libexec/${package.name}/node_modules .
+    ln -s ${dominator.yarnPkg}/libexec/${package.name}/node_modules .
   '';
 
   buildPhase = ''
@@ -74,7 +37,7 @@ stdenv.mkDerivation {
 
   shellHook = ''
     rm -rf node_modules
-    ln -sv ${yarnPkg}/libexec/${package.name}/node_modules .
+    ln -sv ${dominator.yarnPkg}/libexec/${package.name}/node_modules .
     export PATH=$PWD/node_modules/.bin:$PATH
   '';
 }

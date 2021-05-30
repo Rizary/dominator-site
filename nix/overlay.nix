@@ -1,6 +1,6 @@
 final: prev:
 {
-  rollup-wasm-nix-rust = rec {
+  dominator = rec {
     nix = prev.callPackage ./nix { };
   };
 }
