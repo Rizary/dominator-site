@@ -22,15 +22,7 @@ pub struct InnerRoute {
 impl Route {
     pub fn signal() -> impl Signal<Item = Self> {
         routing::url()
-            .signal_ref(|url| Url::new(&url).unwrap_throw())
-            .map(|url| {
-                match url.hash().as_str() {
-                    "/" => Route::Home,
-                    "/docs" => Route::Docs,
-                    "/blog" => Route::Blog,
-                    a => Route::NotFound,
-                }
-            })
+            .signal_ref(|url| Route::from_url(&url))
     }
     
     pub fn from_url(url:&str) -> Self {

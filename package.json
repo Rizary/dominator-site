@@ -10,7 +10,7 @@
         "watch:final": "run-p watch:tailwind watch:rollup",
         "build:final": "run-p build:tailwind build:rollup",
         "watch:tailwind": "postcss src-css/tailwind.css -o devhtml/css/main.css -w",
-        "build:tailwind": "NODE_ENV=production postcss src-css/tailwind.css -o dist/css/main.css",
+        "build:tailwind": "SET NODE_ENV=production postcss src-css/tailwind.css -o dist/css/main.css",
         "watch:rollup": "rollup -c rollup.dev.js --watch",
         "build:rollup": "rollup -c rollup.prod.js",
         "clean": "rimraf ./devhtml/js && rimraf ./devhtml/css",

@@ -57,34 +57,6 @@ impl App {
         })
     }
 
-    fn render_main(app: Rc<Self>) -> Dom {
-        html!("section", {
-            .child_signal(
-              routing::url()
-                .signal_ref(|url| Route::from_url(&url) )
-                .map(move |route| {
-                    let default = html!("section", {
-                        .class(["main","my-2","mx-6","d-inline-flex","flex-column"])
-            
-                        .children(&mut [
-                            html!("div", {
-                                .class(["d-inline-flex","flex-row","flex-items-center"])
-                                .text("Hello, world!")
-                            }),
-                            
-                        ])
-                    });
-                    match route {
-                        Route::Home => Some(default),
-                        Route::Docs => Some(Docs::render(app.clone())),
-                        Route::Blog => Some(Blog::render(app.clone())),
-                        _ => Some(default),
-                    }
-                })
-            )
-        })
-    }
-
     fn render_button(text: &str, route: Route) -> Dom {
         html!("li", {
             .children(&mut [
@@ -96,7 +68,7 @@ impl App {
         })
     }
 
-    fn render_footer(app: Rc<Self>) -> Dom {
+    fn render_footer() -> Dom {
         html!("footer", {
             .class(["footer","p-2","my-2","mx-6","d-inline-flex","flex-column"])
             // Hide if it doesn't have any todos.
@@ -106,11 +78,30 @@ impl App {
     pub fn render(app: Rc<Self>) -> Dom {
         html!("section", {
             .class(["todoapp","bg-gray-light","height-full","d-inline-flex","flex-column","width-full"])
-            .children(&mut [
-                Self::render_header(app.clone()),
-                Self::render_main(app.clone()),
-                Self::render_footer(app.clone()),
-            ])
+            .child(Self::render_header(app.clone()))
+            .child_signal(
+                Route::signal()
+                    .map(move |route| {
+                        let default = html!("section", {
+                            .class(["main","my-2","mx-6","d-inline-flex","flex-column"])
+                
+                            .children(&mut [
+                                html!("div", {
+                                    .class(["d-inline-flex","flex-row","flex-items-center"])
+                                    .text("Hello, world!")
+                                }),
+                                
+                            ])
+                        });
+                        match route {
+                            Route::Home => Some(default),
+                            Route::Docs => Some(Docs::render(app.clone())),
+                            Route::Blog => Some(Blog::render(app.clone())),
+                            _ => Some(default),
+                        }
+                    })
+            )
+            .child(Self::render_footer())
         })
     }
 }
