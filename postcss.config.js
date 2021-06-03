@@ -20,7 +20,9 @@ module.exports = {
         require('postcss-import'),
         require('tailwindcss')('tailwind.config.js'),
         require('autoprefixer'),
-        require('postcss-clean'),
+        require('postcss-csso')({
+            restructure: true
+        }),
         require('postcss-nested'),
         require('lost'),
     ]

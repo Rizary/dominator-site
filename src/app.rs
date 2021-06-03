@@ -40,8 +40,8 @@ impl App {
             .class(["header","m-6","d-inline-flex","flex-row","width-auto","flex-justify-between","flex-wrap"])
             .children(&mut [
                 html!("h1", {
-                    .class(["h1","m-6","p-6","text-bold","text-center","my-lg-2","width-full"])
-                    .text("Hi")
+                    .class(["text-4xl","m-6","p-6","text-bold","text-center","my-lg-2","width-full"])
+                    .text("Dominator")
                 }),
 
                 html!("ul", {

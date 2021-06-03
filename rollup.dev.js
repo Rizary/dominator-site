@@ -32,7 +32,7 @@ export default {
                 'Access-Control-Allow-Origin': '*',
                 "Content-Type": "application/wasm",
             },
-            // historyApiFallback: true,
+            historyApiFallback: true,
         }),
 
         livereload({

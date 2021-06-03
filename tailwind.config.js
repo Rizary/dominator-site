@@ -1,5 +1,6 @@
 // tailwind.config.js
 module.exports = {
+    mode: 'jit',
     future: {
         removeDeprecatedGapUtilities: true,
         purgeLayersByDefault: true,
@@ -20,6 +21,9 @@ module.exports = {
         }),
         require('@tailwindcss/typography'),
         require('tailwindcss-rtl'),
+        require('@tailwindcss/forms')({
+            strategy: 'class',
+        }),
     ],
     prefix: '',
     important: false,
